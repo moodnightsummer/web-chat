@@ -1,4 +1,3 @@
-import { Server } from 'socket.io';
 import { Logger } from '@nestjs/common';
 import {
   MessageBody,
@@ -7,6 +6,7 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
+import { Server } from 'socket.io';
 
 @WebSocketGateway()
 export class EventsGateway implements OnGatewayInit {
@@ -20,6 +20,13 @@ export class EventsGateway implements OnGatewayInit {
     console.log(data);
 
     this.server.emit('events', data);
+  }
+
+  @SubscribeMessage('getId')
+  handleEvent(@MessageBody('id') id: number): number {
+    console.log(id);
+
+    return id;
   }
 
   // 웹소켓 서버가 실행되면 aferInit 함수 실행됨
