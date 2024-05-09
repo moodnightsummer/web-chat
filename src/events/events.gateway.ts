@@ -1,6 +1,7 @@
 import { Logger } from '@nestjs/common';
 import {
   MessageBody,
+  OnGatewayDisconnect,
   OnGatewayInit,
   SubscribeMessage,
   WebSocketGateway,
@@ -9,7 +10,7 @@ import {
 import { Server } from 'socket.io';
 
 @WebSocketGateway()
-export class EventsGateway implements OnGatewayInit {
+export class EventsGateway implements OnGatewayInit, OnGatewayDisconnect {
   constructor() {}
 
   @WebSocketServer() server: Server;
@@ -17,16 +18,16 @@ export class EventsGateway implements OnGatewayInit {
 
   @SubscribeMessage('events')
   handleMessage(@MessageBody() data: string): void {
-    console.log(data);
-
     this.server.emit('events', data);
   }
 
   @SubscribeMessage('getId')
   handleEvent(@MessageBody('id') id: number): number {
-    console.log(id);
-
     return id;
+  }
+
+  handleDisconnect(client: any) {
+    console.log('채팅 끊어짐');
   }
 
   // 웹소켓 서버가 실행되면 aferInit 함수 실행됨

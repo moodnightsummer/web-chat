@@ -7,12 +7,17 @@ const handleSubmitNewMessage = () => {
   socket.emit('events', { data: message.value }); // 클라이언트에서 서버로 이벤트를 발생시킨다
 };
 
-const handleSendIdMessage = () => {
-  socket.emit('getId', { id: message.id });
+// socket 연결 해제
+const handleSocketExit = () => {
+  socket.close();
 };
 
 // socket.on은 클라이언트단에서 발생한 이벤트를 선택적으로 캐치하여 이벤트 핸들러를 등록함
 socket.on('events', ({ data }) => {
+  handleNewMessage(data);
+});
+
+socket.on('exit', ({ data }) => {
   handleNewMessage(data);
 });
 
